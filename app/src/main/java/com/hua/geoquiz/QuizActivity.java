@@ -22,9 +22,9 @@ public class QuizActivity extends AppCompatActivity {
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //使用meta-data控制挑战练习
                 boolean isChallenge = false;
                 try {
+                    //2.使用meta-data
                     ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
                     isChallenge = applicationInfo.metaData.getBoolean("isChallenge");
                 } catch (PackageManager.NameNotFoundException e) {
@@ -32,6 +32,7 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 if (isChallenge) {
+                    //1.自定义Toast
                     Toast toast = Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP, 0, 0);
                     toast.show();
