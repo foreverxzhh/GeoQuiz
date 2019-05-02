@@ -5,3 +5,4 @@ Demo1 for 《Android编程权威指南》
 2.使用meta-data
 <h3>Capter2 重要知识点</h3>
 1.MVC（Model-View-Controller）模型<br />
+2.Math.abs()取绝对值
