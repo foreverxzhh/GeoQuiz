@@ -4,15 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
-    private ImageButton mPreviewButton;
-    private ImageButton mNextButton;
+    private Button mNextButton;
     private TextView mQuestionTextView;
     private int mCurrentIndex = 0;
     private Question[] mQuestionBank =
@@ -31,7 +29,6 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
-        mPreviewButton = findViewById(R.id.preview_button);
         mNextButton = findViewById(R.id.next_button);
         mQuestionTextView = findViewById(R.id.question_text_view);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
@@ -46,23 +43,7 @@ public class QuizActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
-        mPreviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //2.取绝对值
-                mCurrentIndex = Math.abs((mCurrentIndex - 1) % mQuestionBank.length);
-                updateQuestion();
-            }
-        });
         mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                updateQuestion();
-            }
-        });
-
-        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
