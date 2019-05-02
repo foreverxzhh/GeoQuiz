@@ -13,6 +13,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mFalseButton;
     private Button mNextButton;
     private TextView mQuestionTextView;
+    private int mRight = 0;
     private int mCurrentIndex = 0;
     private Question[] mQuestionBank =
             {
@@ -28,7 +29,7 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
@@ -49,10 +50,20 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                updateQuestion();
+                if (mCurrentIndex < mQuestionBank.length - 1) {
+                    mCurrentIndex++;
+                    updateQuestion();
+                    mTrueButton.setClickable(true);
+                    mFalseButton.setClickable(true);
+                    mNextButton.setClickable(false);
+                } else {
+                    double result = (double) mRight / (double) mQuestionBank.length;
+                    Toast.makeText(QuizActivity.this, "" + result + "%", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+        mNextButton.setClickable(false);
         updateQuestion();
     }
 
@@ -61,9 +72,13 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue) {
-        if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue())
+        mTrueButton.setClickable(false);
+        mFalseButton.setClickable(false);
+        mNextButton.setClickable(true);
+        if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()) {
+            mRight++;
             Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
-        else
+        } else
             Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
     }
 
