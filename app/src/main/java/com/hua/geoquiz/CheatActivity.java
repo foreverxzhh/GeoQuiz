@@ -9,10 +9,11 @@ import android.widget.TextView;
 
 public class CheatActivity extends AppCompatActivity {
 
+    private static final String KEY_CHEAT = "cheat";
     private static final String EXTRA_ANSWER_IS_TRUE = "com.hua.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.hua.geoquiz.answer_shown";
-    private boolean mAnswerIsTrue;
-
+    private boolean mAnswerIsTrue = false;
+    private boolean mIsCheat = false;
     private Button mShowAnswerButton;
     private TextView mAnswer;
 
@@ -23,6 +24,16 @@ public class CheatActivity extends AppCompatActivity {
         mShowAnswerButton = findViewById(R.id.show_answer_button);
         mAnswer = findViewById(R.id.answer_text_view);
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
+        if (savedInstanceState != null) {
+            mIsCheat = savedInstanceState.getBoolean(KEY_CHEAT, false);
+            if (mIsCheat) {
+                if (mAnswerIsTrue)
+                    mAnswer.setText(R.string.true_button);
+                else
+                    mAnswer.setText(R.string.false_button);
+                setAnswerShowResult(mIsCheat);
+            }
+        }
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -30,7 +41,8 @@ public class CheatActivity extends AppCompatActivity {
                     mAnswer.setText(R.string.true_button);
                 else
                     mAnswer.setText(R.string.false_button);
-                setAnswerShowResult(true);
+                mIsCheat = true;
+                setAnswerShowResult(mIsCheat);
             }
         });
     }
@@ -39,5 +51,11 @@ public class CheatActivity extends AppCompatActivity {
         Intent intent = new Intent(CheatActivity.this, QuizActivity.class);
         intent.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
         setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_CHEAT, mIsCheat);
     }
 }

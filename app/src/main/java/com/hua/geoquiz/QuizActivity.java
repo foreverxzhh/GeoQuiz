@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "index";
+    private static final String KEY_CHEAT = "cheat";
     private static final String EXTRA_ANSWER_IS_TRUE = "com.hua.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.hua.geoquiz.answer_shown";
     private static final int REQUEST_CODE_CHEAT = 0;
@@ -30,14 +31,16 @@ public class QuizActivity extends AppCompatActivity {
                     new Question(R.string.question_americas, true),
                     new Question(R.string.question_asia, true)
             };
-    private boolean mIsCheater = false;
+    private boolean[] mIsCheater = new boolean[mQuestionBank.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater[mCurrentIndex] = savedInstanceState.getBoolean(KEY_CHEAT, false);
+        }
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
         mCheatButton = findViewById(R.id.cheat_button);
@@ -66,7 +69,6 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIsCheater = false;
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
             }
@@ -79,7 +81,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue) {
-        if (mIsCheater) {
+        if (mIsCheater[mCurrentIndex]) {
             Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -99,13 +101,15 @@ public class QuizActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_INDEX, mCurrentIndex);
+        outState.putBoolean(KEY_CHEAT, mIsCheater[mCurrentIndex]);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHEAT && resultCode == RESULT_OK) {
-            mIsCheater = data.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
+            mIsCheater[mCurrentIndex] = data.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
         }
     }
 }
