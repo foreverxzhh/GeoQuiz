@@ -53,9 +53,9 @@ public class QuizActivity extends AppCompatActivity {
                 if (mCurrentIndex < mQuestionBank.length - 1) {
                     mCurrentIndex++;
                     updateQuestion();
-                    mTrueButton.setClickable(true);
-                    mFalseButton.setClickable(true);
-                    mNextButton.setClickable(false);
+                    mTrueButton.setEnabled(true);
+                    mFalseButton.setEnabled(true);
+                    mNextButton.setEnabled(false);
                 } else {
                     double result = (double) mRight / (double) mQuestionBank.length;
                     Toast.makeText(QuizActivity.this, "" + result + "%", Toast.LENGTH_SHORT).show();
@@ -63,7 +63,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        mNextButton.setClickable(false);
+        mNextButton.setEnabled(false);
         updateQuestion();
     }
 
@@ -72,9 +72,9 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue) {
-        mTrueButton.setClickable(false);
-        mFalseButton.setClickable(false);
-        mNextButton.setClickable(true);
+        mTrueButton.setEnabled(false);
+        mFalseButton.setEnabled(false);
+        mNextButton.setEnabled(true);
         if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue()) {
             mRight++;
             Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
