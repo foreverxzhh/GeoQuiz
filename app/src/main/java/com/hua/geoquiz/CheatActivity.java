@@ -1,6 +1,7 @@
 package com.hua.geoquiz;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,10 +12,11 @@ public class CheatActivity extends AppCompatActivity {
 
     private static final String EXTRA_ANSWER_IS_TRUE = "com.hua.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.hua.geoquiz.answer_shown";
-    private boolean mAnswerIsTrue;
+    private boolean mAnswerIsTrue = false;
 
     private Button mShowAnswerButton;
     private TextView mAnswer;
+    private TextView mAPILevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,7 @@ public class CheatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cheat);
         mShowAnswerButton = findViewById(R.id.show_answer_button);
         mAnswer = findViewById(R.id.answer_text_view);
+        mAPILevel = findViewById(R.id.api_level);
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +36,7 @@ public class CheatActivity extends AppCompatActivity {
                 setAnswerShowResult(true);
             }
         });
+        mAPILevel.setText("" + Build.VERSION.SDK_INT);
     }
 
     private void setAnswerShowResult(boolean isAnswerShown) {

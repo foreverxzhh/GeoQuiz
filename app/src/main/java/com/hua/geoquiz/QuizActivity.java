@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "index";
+    private static final String KEY_COUNT = "count";
     private static final String EXTRA_ANSWER_IS_TRUE = "com.hua.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.hua.geoquiz.answer_shown";
     private static final int REQUEST_CODE_CHEAT = 0;
@@ -20,6 +21,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mCheatButton;
     private Button mNextButton;
     private TextView mQuestionTextView;
+    private TextView mCheatCountTextView;
     private int mCurrentIndex = 0;
     private Question[] mQuestionBank =
             {
@@ -31,18 +33,22 @@ public class QuizActivity extends AppCompatActivity {
                     new Question(R.string.question_asia, true)
             };
     private boolean mIsCheater = false;
+    private int mCheatCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mCheatCount = savedInstanceState.getInt(KEY_COUNT, 0);
+        }
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
         mCheatButton = findViewById(R.id.cheat_button);
         mNextButton = findViewById(R.id.next_button);
         mQuestionTextView = findViewById(R.id.question_text_view);
+        mCheatCountTextView = findViewById(R.id.cheat_count);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +78,11 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
         updateQuestion();
+        mCheatCountTextView.setText("" + (3 - mCheatCount));
+        if (mCheatCount >= 3) {
+            mCheatButton.setVisibility(View.GONE);
+            mCheatCountTextView.setVisibility(View.GONE);
+        }
     }
 
     private void updateQuestion() {
@@ -99,6 +110,7 @@ public class QuizActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_INDEX, mCurrentIndex);
+        outState.putInt(KEY_COUNT, mCheatCount);
     }
 
     @Override
@@ -106,6 +118,14 @@ public class QuizActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHEAT && resultCode == RESULT_OK) {
             mIsCheater = data.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
+            if (mIsCheater)
+                mCheatCount++;
+            mCheatCountTextView.setText("" + (3 - mCheatCount));
+            if (mCheatCount >= 3) {
+                mCheatButton.setVisibility(View.GONE);
+                mCheatCountTextView.setVisibility(View.GONE);
+            }
+
         }
     }
 }
